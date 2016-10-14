@@ -1,4 +1,4 @@
-package com.migapro.sudokusolver;
+package com.migapro.sudokusolverV1;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -25,19 +25,20 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import com.migapro.tester.ISolver;
+
 /**
  * Sudoku program that validates and finds a solution.
  * @author Miga
  * @version 1.1
  *
  */
-public class SudokuSolver extends JFrame implements ActionListener {
+public class SudokuSolver extends JFrame implements ActionListener, ISolver{
 
 	/** UID */
 	private static final long serialVersionUID = 3883151525928534467L;
 	
 	public static final String VERSION = "1.0";
-
 	/** Contains UI for cells */
 	private SudokuCell[][] sudokuCells;
 	/** Contains integers representing values in cells. */
@@ -60,6 +61,14 @@ public class SudokuSolver extends JFrame implements ActionListener {
 		setLocation((d.width / 2 - 175), (d.height / 2 - 275));
 		setResizable(false);
 		setVisible(true);
+	}
+	
+	public String getVersion(){
+		return VERSION;
+	}
+	
+	public void setCellValues(int[][] values){
+		this.cellValues = values;
 	}
 	
 	/**

@@ -4,17 +4,18 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-import com.migapro.sudokusolver.SudokuSolver;
+import com.migapro.sudokusolverV1.SudokuSolver;
 
 public class ProgramTester {
 	
-	private static SudokuSolver solver;
+	private static ISolver solver;
 	//private static ArrayList<String> logger = new ArrayList<>();
 	private static SudokuReader reader;
 	private static Logger logger = new Logger();
 
 	public static void main(String[] args) {
-		solver = new SudokuSolver();
+		//solver = new SudokuSolver();
+		setSolver(2);
 		reader = new SudokuReader();
 		ArrayList<Sudoku> sudokus = reader.readAllSudokus();
 		avgTest(sudokus);
@@ -23,8 +24,21 @@ public class ProgramTester {
 		
 	}
 	
+	public static void setSolver(int version){
+		switch (version) {
+		case 1:
+			solver = new com.migapro.sudokusolverV1.SudokuSolver();
+			break;
+		case 2:
+			solver = new com.migapro.sudokusolverV2.SudokuSolver();
+
+		default:
+			break;
+		}
+	}
+	
 	private static void avgTest(ArrayList<Sudoku> sudokus){
-		logger.startTest(solver.VERSION);
+		logger.startTest(solver.getVersion());
 		for (int i = 0; i < sudokus.size(); i++) {
 			averageSolveTime(100, sudokus.get(i), i);
 		}
@@ -38,7 +52,7 @@ public class ProgramTester {
 		runtimes[0] = rt.totalMemory() - rt.freeMemory();
 		
 		for (int i = 0; i < iterations; i++) {
-			solver.cellValues = sudoku.cloneSudoku();
+			solver.setCellValues(sudoku.cloneSudoku());
 			long start = System.nanoTime();
 			solver.solve(0, 0);
 			times[i] = System.nanoTime() - start;
@@ -60,7 +74,7 @@ public class ProgramTester {
 		
 		long avg = sum / iterations;
 		
-		logger.logAvgRun(solver.VERSION, sudokuNumber, iterations, avg, max, min);
+		logger.logAvgRun(solver.getVersion(), sudokuNumber, iterations, avg, max, min);
 	}
 
 	

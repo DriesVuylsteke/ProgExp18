@@ -24,13 +24,21 @@ Solver Version => 1.0
 
 <======================================================== INFO ========================================================>
 Name => Windows 10
+
 Type => amd64
+
 OS Version => 10.0
+
 Processor => Intel64 Family 6 Model 58 Stepping 9, GenuineIntel
+
 Architecture => AMD64
+
 Available processors (cores): 8
+
 Free memory (bytes): 118139344
+
 Maximum memory (bytes): 1875378176
+
 Total memory (bytes): 126877696
 Solver Version => 1.0
 <======================================================== DATA ========================================================>
@@ -44,5 +52,29 @@ Solver Version => 1.0
 2016/10/14 12:52:52  -  Sudoku Solver s08 i0100  ||  avg =      5.698탎  |  max =     11.364탎  |  min =        298탎
 2016/10/14 12:52:54  -  Sudoku Solver s09 i0100  ||  avg =     23.427탎  |  max =     42.974탎  |  min =        798탎
 2016/10/14 12:53:00  -  Sudoku Solver s10 i0100  ||  avg =     58.267탎  |  max =    111.629탎  |  min =      1.616탎
+<======================================================================================================================>
+
+<======================================================== INFO ========================================================>
+Name => Windows 10
+Type => amd64
+OS Version => 10.0
+Processor => Intel64 Family 6 Model 58 Stepping 9, GenuineIntel
+Architecture => AMD64
+Available processors (cores): 8
+Free memory (bytes): 117530664
+Maximum memory (bytes): 1875378176
+Total memory (bytes): 126877696
+Solver Version => 2.0
+<======================================================== DATA ========================================================>
+2016/10/14 14:48:51  -  Sudoku Solver s01 i0100  ||  avg =    541.684탎  |  max =  1.703.182탎  |  min =    514.222탎
+2016/10/14 14:48:51  -  Sudoku Solver s02 i0100  ||  avg =      4.009탎  |  max =      9.919탎  |  min =      3.196탎
+2016/10/14 14:48:51  -  Sudoku Solver s03 i0100  ||  avg =        128탎  |  max =      1.178탎  |  min =         70탎
+2016/10/14 14:48:51  -  Sudoku Solver s04 i0100  ||  avg =        140탎  |  max =        424탎  |  min =         89탎
+2016/10/14 14:48:51  -  Sudoku Solver s05 i0100  ||  avg =        117탎  |  max =        277탎  |  min =         81탎
+2016/10/14 14:48:51  -  Sudoku Solver s06 i0100  ||  avg =        404탎  |  max =      1.259탎  |  min =        238탎
+2016/10/14 14:48:51  -  Sudoku Solver s07 i0100  ||  avg =        684탎  |  max =      1.145탎  |  min =        444탎
+2016/10/14 14:48:51  -  Sudoku Solver s08 i0100  ||  avg =        165탎  |  max =        470탎  |  min =        120탎
+2016/10/14 14:48:51  -  Sudoku Solver s09 i0100  ||  avg =        157탎  |  max =      1.636탎  |  min =        103탎
+2016/10/14 14:48:52  -  Sudoku Solver s10 i0100  ||  avg =      3.383탎  |  max =      5.048탎  |  min =      2.969탎
 <======================================================================================================================>
 
