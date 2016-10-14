@@ -21,15 +21,12 @@ public class ProgramTester {
 		
 		Runtime rt = Runtime.getRuntime();
 		
-		
-		
-		
 	}
 	
 	private static void avgTest(ArrayList<Sudoku> sudokus){
 		logger.startTest(solver.VERSION);
 		for (int i = 0; i < sudokus.size(); i++) {
-			averageSolveTime(5, sudokus.get(i), i);
+			averageSolveTime(100, sudokus.get(i), i);
 		}
 		logger.endTest();
 	}
