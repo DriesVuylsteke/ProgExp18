@@ -577,4 +577,9 @@ public class SudokuSolver extends JFrame implements ActionListener, ISolver{
 		new SudokuSolver();
 	}
 
+	@Override
+	public int[][] getCellValues() {
+		return cellValues;
+	}
+
 }

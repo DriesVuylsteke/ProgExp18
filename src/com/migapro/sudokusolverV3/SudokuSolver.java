@@ -1,4 +1,4 @@
-package com.migapro.sudokusolverV2;
+package com.migapro.sudokusolverV3;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -30,23 +30,21 @@ import com.migapro.tester.ISolver;
 /**
  * Sudoku program that validates and finds a solution.
  * 
- * Problem 1:   Every time the solve method asks for a list of 1 through 9
- * 				the method generates this arraylist and randomizes the
- * 				order of the list and then returns it as an array.
+ * Problem 2: 	The randomization of the numbers which are used to fill in the sudoku.
+ * 				
+ * Opinion: 	Since we have stopped recreating the random array every iteration
+ * 				we could also stop the randomization of the array. The randomization
+ * 				may increase the runtime of a very select number of sudoku's but ultimately
+ * 				there is no difference between iterating through a shuffled list or a sorted list.
  * 
- * Opinion: 	Creating, randomizing and parsing a arraylist every iteration
- * 				of the algorithm takes up a lot of time and cpu power.
- * 				Changing this would probably increase the speed of the algorithm
- * 				considerably.
+ * Solution: 	We could just remove the shuffle method at the end of the generateRandomNumbers method
+ * 				but that won't make a big difference since we already attended the constant randomization
+ * 				problem in our previous solution. To improve the algorithm this time we are going to skip
+ * 				the generateRandomNumbers method and use the value of the for-loop in the solve method to
+ * 				fill in the sudoku.
  * 
- * Solution 1:  The random array is only generated in the first iteration of the algorithm
- * 				and is save in the class. Every other iteration will just get this saved array.
- * 
- * Edits		1. 	Created a private member for the class to save the random number array. (65 + 484)
- * 				2. 	Added an if statement at the start of the generateRandomNumbers method to
- * 				   	check if the private member already exists. (475 - 478)
- * 				3. 	The private member is set to null once the end of the algorithm has been reached. (438)
- * 
+ * edits:		1. 	Remove the call to the generateRandomNumbers method. (443)
+ * 				2.	Replace all calls to the randomvalues array with the value of the for-loop. (447 - 450)
  * 
  * @author Daniel
  * @version 2.0
@@ -62,7 +60,6 @@ public class SudokuSolver extends JFrame implements ActionListener, ISolver{
 	private SudokuCell[][] sudokuCells;
 	/** Contains integers representing values in cells. */
 	public int[][] cellValues;
-	public Integer[] randomValues;
 
 	/**
 	 * Constructor.
@@ -434,24 +431,23 @@ public class SudokuSolver extends JFrame implements ActionListener, ISolver{
 	 */
 	public boolean solve(int row, int col) {
 		// If it has passed through all cells, start quitting
-		if (row == 9){
-			randomValues = null;
+		if (row == 9)
 			return true;
-		}
+		
 		// If this cell is already set(fixed), skip to the next cell
 		if (cellValues[row][col] != 0) {
 			if (solve(col == 8? (row + 1): row, (col + 1) % 9))
 				return true;
 		} else {
 			// Random numbers 1 - 9
-			Integer[] randoms = generateRandomNumbers();
-			for (int i = 0; i < 9; i++) {
+			//Integer[] randoms = generateRandomNumbers();
+			for (int i = 1; i <= 9; i++) {
 				
 				// If no duplicates in this row, column, 3x3, assign the value and go to the next
-				if (!isContainedInRowColumn(row, col, randoms[i]) &&
-						!isContainedIn3x3Box(row, col, randoms[i])) {
-					cellValues[row][col] = randoms[i];
-					sudokuCells[row][col].setText(String.valueOf(randoms[i]));
+				if (!isContainedInRowColumn(row, col, i) &&
+						!isContainedIn3x3Box(row, col, i)) {
+					cellValues[row][col] = i;
+					sudokuCells[row][col].setText(String.valueOf(i));
 					
 					// Move to the next cell left-to-right and top-to-bottom
 					if (solve(col == 8? (row + 1) : row, (col + 1) % 9))
@@ -473,16 +469,12 @@ public class SudokuSolver extends JFrame implements ActionListener, ISolver{
 	 * @return array containing 9 random unique numbers.
 	 */
 	private Integer[] generateRandomNumbers() {
-		if(randomValues != null){
-			return randomValues;
-		}
 		ArrayList<Integer> randoms = new ArrayList<Integer>();
 		for (int i = 0; i < 9; i++)
 			randoms.add(i + 1);
-		Collections.shuffle(randoms);
+		//Collections.shuffle(randoms);
 		
-		randomValues = randoms.toArray(new Integer[9]);
-		return randomValues;
+		return randoms.toArray(new Integer[9]);
 	}
 	
 	@Override

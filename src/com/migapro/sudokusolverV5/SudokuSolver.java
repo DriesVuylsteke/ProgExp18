@@ -1,4 +1,4 @@
-package com.migapro.sudokusolverV2;
+package com.migapro.sudokusolverV5;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -30,23 +30,16 @@ import com.migapro.tester.ISolver;
 /**
  * Sudoku program that validates and finds a solution.
  * 
- * Problem 1:   Every time the solve method asks for a list of 1 through 9
- * 				the method generates this arraylist and randomizes the
- * 				order of the list and then returns it as an array.
+ * Problem 4: 	The color for the preset cell is created everytime a cell is marked as a preset.
+ * 				This creates a lot of unnecessary objects. 
+ * 				
+ * Opinion: 	This is not a big problem but the memory usage will be a bit lower if you have a smaller number
+ * 				of colors.
  * 
- * Opinion: 	Creating, randomizing and parsing a arraylist every iteration
- * 				of the algorithm takes up a lot of time and cpu power.
- * 				Changing this would probably increase the speed of the algorithm
- * 				considerably.
+ * Solution: 	We can define the color as a member of the class and pass this along as a reference when needed.
  * 
- * Solution 1:  The random array is only generated in the first iteration of the algorithm
- * 				and is save in the class. Every other iteration will just get this saved array.
- * 
- * Edits		1. 	Created a private member for the class to save the random number array. (65 + 484)
- * 				2. 	Added an if statement at the start of the generateRandomNumbers method to
- * 				   	check if the private member already exists. (475 - 478)
- * 				3. 	The private member is set to null once the end of the algorithm has been reached. (438)
- * 
+ * edits:		1. 	Making the color a member of the class. (59)
+ * 				2.	Changing the color creating into a member call.
  * 
  * @author Daniel
  * @version 2.0
@@ -62,7 +55,8 @@ public class SudokuSolver extends JFrame implements ActionListener, ISolver{
 	private SudokuCell[][] sudokuCells;
 	/** Contains integers representing values in cells. */
 	public int[][] cellValues;
-	public Integer[] randomValues;
+	private JButton solveButton;
+	private Color markedColor = new Color(150, 150, 150);
 
 	/**
 	 * Constructor.
@@ -120,7 +114,7 @@ public class SudokuSolver extends JFrame implements ActionListener, ISolver{
 		// First row of buttons
 		JPanel buttonsPanel = new JPanel();
 		JButton submitButton = new JButton("Submit"); // Submit to validate the Sudoku
-		JButton solveButton = new JButton("Solve"); // Solve the Sudoku
+		solveButton = new JButton("Solve"); // Solve the Sudoku
 		JButton eraseButton = new JButton("Erase"); // Clear the cells that are not fixed
 		JButton eraseAllButton = new JButton("Erase All"); // Clear all cells including fixed ones
 		
@@ -197,8 +191,9 @@ public class SudokuSolver extends JFrame implements ActionListener, ISolver{
 		
 		if (buttonType.equals("Submit"))
 			submitSudoku();
-		else if (buttonType.equals("Solve"))
-			startSolving();
+		else if (buttonType.equals("Solve")){
+			new Thread(() -> startSolving());
+		}
 		else if (buttonType.equals("Erase"))
 			erase();
 		else if (buttonType.equals("Erase All"))
@@ -225,16 +220,13 @@ public class SudokuSolver extends JFrame implements ActionListener, ISolver{
 	 * Start working on the Sudoku if it is ready.
 	 */
 	private void startSolving() {
+		solveButton.setEnabled(false);
 		// Don't do anything if Sudoku is already full
 		if (isSudokuFull()) {
 			JOptionPane.showMessageDialog(getRootPane(), 
 					"<html><center>There are no cells open to start from.</center></html>", 
 					"Solving Sudoku", JOptionPane.ERROR_MESSAGE);
-			return;
-		}
-		
-		// Validate before starting
-		if (isValidToStart()) {
+		} else if (isValidToStart()) {
 			markAsPresetCells();
 			if (!solve(0, 0))
 				JOptionPane.showMessageDialog(getRootPane(), 
@@ -244,6 +236,7 @@ public class SudokuSolver extends JFrame implements ActionListener, ISolver{
 			JOptionPane.showMessageDialog(getRootPane(), 
 					"<html><center>This is not a valid Sudoku to start.</center></html>", 
 					"Solving Sudoku", JOptionPane.ERROR_MESSAGE);
+		solveButton.setEnabled(true);
 	}
 	
 	/**
@@ -366,7 +359,7 @@ public class SudokuSolver extends JFrame implements ActionListener, ISolver{
 							!isContainedInRowColumn(i, j, cellValues[i][j])) {
 						sudokuCells[i][j].editable = false;
 						sudokuCells[i][j].setEditable(false);
-						sudokuCells[i][j].setForeground(new Color(150, 150, 150));
+						sudokuCells[i][j].setForeground(markedColor);
 					}
 	}
 	
@@ -434,24 +427,23 @@ public class SudokuSolver extends JFrame implements ActionListener, ISolver{
 	 */
 	public boolean solve(int row, int col) {
 		// If it has passed through all cells, start quitting
-		if (row == 9){
-			randomValues = null;
+		if (row == 9)
 			return true;
-		}
+		
 		// If this cell is already set(fixed), skip to the next cell
 		if (cellValues[row][col] != 0) {
 			if (solve(col == 8? (row + 1): row, (col + 1) % 9))
 				return true;
 		} else {
 			// Random numbers 1 - 9
-			Integer[] randoms = generateRandomNumbers();
-			for (int i = 0; i < 9; i++) {
+			//Integer[] randoms = generateRandomNumbers();
+			for (int i = 1; i <= 9; i++) {
 				
 				// If no duplicates in this row, column, 3x3, assign the value and go to the next
-				if (!isContainedInRowColumn(row, col, randoms[i]) &&
-						!isContainedIn3x3Box(row, col, randoms[i])) {
-					cellValues[row][col] = randoms[i];
-					sudokuCells[row][col].setText(String.valueOf(randoms[i]));
+				if (!isContainedInRowColumn(row, col, i) &&
+						!isContainedIn3x3Box(row, col, i)) {
+					cellValues[row][col] = i;
+					sudokuCells[row][col].setText(String.valueOf(i));
 					
 					// Move to the next cell left-to-right and top-to-bottom
 					if (solve(col == 8? (row + 1) : row, (col + 1) % 9))
@@ -473,16 +465,12 @@ public class SudokuSolver extends JFrame implements ActionListener, ISolver{
 	 * @return array containing 9 random unique numbers.
 	 */
 	private Integer[] generateRandomNumbers() {
-		if(randomValues != null){
-			return randomValues;
-		}
 		ArrayList<Integer> randoms = new ArrayList<Integer>();
 		for (int i = 0; i < 9; i++)
 			randoms.add(i + 1);
-		Collections.shuffle(randoms);
+		//Collections.shuffle(randoms);
 		
-		randomValues = randoms.toArray(new Integer[9]);
-		return randomValues;
+		return randoms.toArray(new Integer[9]);
 	}
 	
 	@Override
