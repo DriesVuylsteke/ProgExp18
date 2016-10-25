@@ -193,7 +193,7 @@ public class SudokuSolver extends JFrame implements ActionListener, ISolver{
 		if (buttonType.equals("Submit"))
 			submitSudoku();
 		else if (buttonType.equals("Solve")){
-			new Thread(() -> startSolving());
+			new Thread(() -> startSolving()).start();
 		}
 		else if (buttonType.equals("Erase"))
 			erase();
