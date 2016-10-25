@@ -15,14 +15,29 @@ public class ProgramTester {
 
 	public static void main(String[] args) {
 		//solver = new SudokuSolver();
-		setSolver(2);
-		reader = new SudokuReader();
-		ArrayList<Sudoku> sudokus = reader.readAllSudokus();
+		//setSolver(2);
+		//reader = new SudokuReader();
+		//ArrayList<Sudoku> sudokus = reader.readAllSudokus();
 		//avgTest(sudokus);
 		
 		//Runtime rt = Runtime.getRuntime();
 		
-		averageSolveTime(1, sudokus.get(1), 1);
+		//averageSolveTime(1, sudokus.get(1), 1);
+	}
+	
+	public static void runAll(){
+		
+		reader = new SudokuReader();
+		ArrayList<Sudoku> sudokus = reader.readAllSudokus();
+		
+		for (int i = 1; i <= 6; i++) {
+			
+			setSolver(i);
+			avgTest(sudokus);
+			
+		}
+		
+		
 	}
 	
 	public static void setSolver(int version){
@@ -53,7 +68,7 @@ public class ProgramTester {
 	private static void avgTest(ArrayList<Sudoku> sudokus){
 		logger.startTest(solver.getVersion());
 		for (int i = 0; i < sudokus.size(); i++) {
-			averageSolveTime(2, sudokus.get(i), i);
+			averageSolveTime(100, sudokus.get(i), i);
 		}
 		logger.endTest();
 	}
@@ -88,7 +103,7 @@ public class ProgramTester {
 		
 		long avg = sum / iterations;
 		
-		//logger.logAvgRun(solver.getVersion(), sudokuNumber, iterations, avg, max, min);
+		logger.logAvgRun(solver.getVersion(), sudokuNumber, iterations, avg, max, min);
 	}
 
 	private static void printSudoku(int[][] sudoku){
