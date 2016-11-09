@@ -12,7 +12,8 @@ public class ProgramTester {
 	private static ISolver solver;
 	//private static ArrayList<String> logger = new ArrayList<>();
 	private static SudokuReader reader;
-	private static Logger logger = new Logger();
+	//private static Logger logger = new Logger();
+	private static LoggerThread logger;
 
 	public static void main(String[] args) {
 		//solver = new SudokuSolver();
@@ -24,6 +25,8 @@ public class ProgramTester {
 		//Runtime rt = Runtime.getRuntime();
 		
 		//averageSolveTime(1, sudokus.get(1), 1);
+		
+		logger = LoggerThread.getLogger();
 		try {
 			int i = System.in.read();
 		} catch (IOException e) {
@@ -31,6 +34,13 @@ public class ProgramTester {
 			e.printStackTrace();
 		}
 		runAll();
+		try {
+			logger.shutDown();
+			logger.join();
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		System.out.println("<== Program Finished ==>");
 		System.exit(0);
 	}
@@ -80,11 +90,9 @@ public class ProgramTester {
 	}
 	
 	private static void avgTest(ArrayList<Sudoku> sudokus){
-		logger.startTest(solver.getVersion());
 		for (int i = 0; i < sudokus.size(); i++) {
-			averageSolveTime(5, sudokus.get(i), i);
+			averageSolveTime(25, sudokus.get(i), i);
 		}
-		logger.endTest();
 	}
 
 	private static void averageSolveTime(int iterations, Sudoku sudoku, int sudokuNumber) {
@@ -117,7 +125,15 @@ public class ProgramTester {
 		
 		long avg = sum / iterations;
 		
-		logger.logAvgRun(solver.getVersion(), sudokuNumber, iterations, avg, max, min);
+		LogValues values = new LogValues();
+		values.SolverVersion = solver.getVersion();
+		values.sudokuNumber = sudokuNumber;
+		values.iterations = iterations;
+		values.avg = avg;
+		values.max = max;
+		values.min = min;
+		logger.log(values);
+		//logger.logAvgRun(solver.getVersion(), sudokuNumber, iterations, avg, max, min);
 	}
 
 	private static void printSudoku(int[][] sudoku){

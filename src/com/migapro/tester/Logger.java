@@ -1,6 +1,7 @@
 package com.migapro.tester;
 
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -9,12 +10,13 @@ import java.util.Calendar;
 
 public class Logger {
 
-	public String logSudoku = "logSudoku.txt";
-	public String logFile = "log.txt";
-	public int numberOfSpaces = 10;
+	private String logSudoku = "logSudoku.txt";
+	private String logFile = "log.txt";
+	private final int numberOfSpaces = 10;
+	private String lastSolverVersion = null;
 	
 	
-	public void log(String log){
+	private void log(String log){
 		
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(logFile, true))){
 			writer.write(log);
@@ -26,7 +28,7 @@ public class Logger {
 		
 	}
 	
-	public void sudokuLog(String sudokuNumber, String log){
+	private void sudokuLog(String sudokuNumber, String log){
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter("sudoku" + sudokuNumber + ".txt", true))){
 			writer.write(log);
 			writer.newLine();
@@ -34,14 +36,33 @@ public class Logger {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
-
-	public void logFile(ArrayList<String> logger) {
-		for (String line : logger) {
-			log(line);
-		}
+		
+		
 	}
 	
+	private void sudokuCsvLog(String version, String sudokuNumber, long avg, long max, long min){
+		String file = "sudoku" + sudokuNumber + ".csv";
+		if(!(new File(file).exists())){
+			try(BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))){
+				String line = String.format("%1s,%2s,%3s,%4s", "version", "avg", "max", "min");
+				writer.write(sudokuNumber);
+				writer.write(line);
+				writer.newLine();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		try(BufferedWriter writer = new BufferedWriter(new FileWriter(file, true))){
+			String line = String.format("%1s,%2d,%3d,%4d", version, avg, max, min);
+			writer.write(line);
+			writer.newLine();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	public void logAvgRun(String version, int sudokuNumber, int iterations, long avg, long max, long min){
 		
 		String maxString = String.format("%," + numberOfSpaces + "d", max / 1000);
@@ -55,6 +76,7 @@ public class Logger {
 				"µs  |  max = " + maxString + "µs  |  min = " + minString + "µs";
 		log(logString);
 		sudokuLog(sudString, "V" + version + " --> " + logString);
+		sudokuCsvLog(version, sudString, avg, max, min);
 	}
 	
 	private String getComputerDetails(){
@@ -87,7 +109,7 @@ public class Logger {
         
 	}
 	
-	public void logSudokus(ArrayList<Sudoku> sudokus){
+	private void logSudokus(ArrayList<Sudoku> sudokus){
 		
 		try(BufferedWriter writer = new BufferedWriter(new FileWriter(logSudoku, false))){
 			for (int i = 0; i < sudokus.size(); i++) {
@@ -101,7 +123,7 @@ public class Logger {
 		
 	}
 
-	public void startTest(String version) {
+	private void startTest(String version) {
 		log("<======================================================== INFO ========================================================>");
 		log(getComputerDetails());
 		log("Solver Version => " + version);
@@ -109,9 +131,22 @@ public class Logger {
 		
 	}
 	
-	public void endTest(){
+	private void endTest(){
 		log("<======================================================================================================================>");
 		log("");
+	}
+
+	public void logAvgRun(LogValues log) {
+		if(lastSolverVersion == null){
+			startTest(log.SolverVersion);
+			lastSolverVersion = log.SolverVersion;
+		}
+		else if(lastSolverVersion != log.SolverVersion){
+			endTest();
+			startTest(log.SolverVersion);
+			lastSolverVersion = log.SolverVersion;
+		}
+		logAvgRun(log.SolverVersion, log.sudokuNumber, log.iterations, log.avg, log.max, log.min);
 	}
 	
 	
