@@ -11,6 +11,7 @@ import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.WindowEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -580,6 +581,11 @@ public class SudokuSolver extends JFrame implements ActionListener, ISolver{
 	@Override
 	public int[][] getCellValues() {
 		return cellValues;
+	}
+	
+	public void destroy(){
+		this.setVisible(false);
+		this.dispose();
 	}
 
 }

@@ -31,6 +31,8 @@ public class ProgramTester {
 			e.printStackTrace();
 		}
 		runAll();
+		System.out.println("<== Program Finished ==>");
+		System.exit(0);
 	}
 	
 	public static void runAll(){
@@ -39,16 +41,20 @@ public class ProgramTester {
 		ArrayList<Sudoku> sudokus = reader.readAllSudokus();
 		
 		for (int i = 1; i <= 6; i++) {
-			
+			System.out.println("Start Solver V" + i);
 			setSolver(i);
 			avgTest(sudokus);
-			
+			if(solver != null){
+				solver.destroy();
+				solver = null;
+			}
 		}
 		
 		
 	}
 	
 	public static void setSolver(int version){
+		
 		switch (version) {
 		case 1:
 			solver = new com.migapro.sudokusolverV1.SudokuSolver();
@@ -76,7 +82,7 @@ public class ProgramTester {
 	private static void avgTest(ArrayList<Sudoku> sudokus){
 		logger.startTest(solver.getVersion());
 		for (int i = 0; i < sudokus.size(); i++) {
-			averageSolveTime(10, sudokus.get(i), i);
+			averageSolveTime(5, sudokus.get(i), i);
 		}
 		logger.endTest();
 	}

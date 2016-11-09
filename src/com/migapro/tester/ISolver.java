@@ -7,4 +7,5 @@ public interface ISolver {
 	public boolean solve(int i, int j);
 	public String getVersion();
 	public void erase();
+	public void destroy();
 }
