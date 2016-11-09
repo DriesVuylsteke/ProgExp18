@@ -1,5 +1,6 @@
 package com.migapro.tester;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -23,6 +24,13 @@ public class ProgramTester {
 		//Runtime rt = Runtime.getRuntime();
 		
 		//averageSolveTime(1, sudokus.get(1), 1);
+		try {
+			int i = System.in.read();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		runAll();
 	}
 	
 	public static void runAll(){
@@ -68,7 +76,7 @@ public class ProgramTester {
 	private static void avgTest(ArrayList<Sudoku> sudokus){
 		logger.startTest(solver.getVersion());
 		for (int i = 0; i < sudokus.size(); i++) {
-			averageSolveTime(100, sudokus.get(i), i);
+			averageSolveTime(10, sudokus.get(i), i);
 		}
 		logger.endTest();
 	}
@@ -86,7 +94,7 @@ public class ProgramTester {
 			times[i] = System.nanoTime() - start;
 			runtimes[i+1] = rt.totalMemory() - rt.freeMemory();
 			System.out.println(i + "  -  " + times[i]);
-			printSudoku(solver.getCellValues());
+			//printSudoku(solver.getCellValues());
 			solver.erase();
 		}
 		

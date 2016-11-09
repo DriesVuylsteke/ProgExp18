@@ -55,7 +55,7 @@ public class SudokuSolver extends JFrame implements ActionListener, ISolver{
 	/** UID */
 	private static final long serialVersionUID = 3883151525928534467L;
 	
-	public static final String VERSION = "2.0";
+	public static final String VERSION = "3.0";
 	/** Contains UI for cells */
 	private SudokuCell[][] sudokuCells;
 	/** Contains integers representing values in cells. */
